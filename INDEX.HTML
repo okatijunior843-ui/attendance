@@ -1,44 +1,46 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In/Out System</title>
+    <title>Attendance Management System</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
+        <!-- Authentication Forms -->
         <div id="auth-forms">
             <div class="form-container" id="login-form">
-                <h2>Login</h2>
+                <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
                 <form id="login">
                     <div class="form-group">
-                        <label for="login-username">Username</label>
+                        <label for="login-username"><i class="fas fa-user"></i> Username/Email</label>
                         <input type="text" id="login-username" required>
                     </div>
                     <div class="form-group">
-                        <label for="login-password">Password</label>
+                        <label for="login-password"><i class="fas fa-lock"></i> Password</label>
                         <input type="password" id="login-password" required>
                     </div>
                     <button type="submit">Login</button>
                 </form>
                 <p>Don't have an account? <a href="#" id="show-register">Register</a></p>
+                <p><a href="#" id="forgot-password">Forgot Password?</a></p>
             </div>
 
             <div class="form-container" id="register-form" style="display: none;">
-                <h2>Register</h2>
+                <h2><i class="fas fa-user-plus"></i> Register</h2>
                 <form id="register">
                     <div class="form-group">
-                        <label for="register-username">Username</label>
+                        <label for="register-username"><i class="fas fa-user"></i> Username</label>
                         <input type="text" id="register-username" required>
                     </div>
                     <div class="form-group">
-                        <label for="register-email">Email</label>
+                        <label for="register-email"><i class="fas fa-envelope"></i> Email</label>
                         <input type="email" id="register-email" required>
                     </div>
                     <div class="form-group">
-                        <label for="register-password">Password</label>
+                        <label for="register-password"><i class="fas fa-lock"></i> Password</label>
                         <input type="password" id="register-password" required>
                     </div>
                     <button type="submit">Register</button>
@@ -47,15 +49,380 @@
             </div>
         </div>
 
-        <div id="user-dashboard" style="display: none;">
-            <h2>Welcome, <span id="username-display"></span>!</h2>
-            <p>You are successfully logged in.</p>
-            <button id="logout-btn">Logout</button>
+        <!-- MFA Form -->
+        <div id="mfa-form" class="form-container" style="display: none;">
+            <h2><i class="fas fa-shield-alt"></i> Multi-Factor Authentication</h2>
+            <form>
+                <div class="form-group">
+                    <label for="mfa-code"><i class="fas fa-key"></i> Enter MFA Code</label>
+                    <input type="text" id="mfa-code" placeholder="123456" maxlength="6" required>
+                </div>
+                <button type="submit">Verify</button>
+            </form>
+            <p><small>Enter the 6-digit code from your authenticator app</small></p>
         </div>
 
+        <!-- Main Dashboard -->
+        <div id="user-dashboard" style="display: none;">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div class="user-info">
+                    <h2>Welcome, <span id="username-display"></span>!</h2>
+                    <span class="role-badge" id="user-role"></span>
+                </div>
+                <div class="header-actions">
+                    <button id="emergency-btn" class="emergency-btn">
+                        <i class="fas fa-exclamation-triangle"></i> Emergency
+                    </button>
+                    <button id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="dashboard-nav">
+                <button class="nav-btn active" data-section="overview">
+                    <i class="fas fa-tachometer-alt"></i> Overview
+                </button>
+                <button class="nav-btn" data-section="attendance">
+                    <i class="fas fa-clock"></i> Attendance
+                </button>
+                <button class="nav-btn supervisor-admin" data-section="monitoring">
+                    <i class="fas fa-users"></i> Monitoring
+                </button>
+                <button class="nav-btn supervisor-admin" data-section="reports">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </button>
+                <button class="nav-btn admin-only" data-section="admin">
+                    <i class="fas fa-cog"></i> Admin
+                </button>
+                <button class="nav-btn supervisor-admin" data-section="security">
+                    <i class="fas fa-shield-alt"></i> Security
+                </button>
+            </nav>
+
+            <!-- Overview Section -->
+            <div id="overview-section" class="dashboard-section">
+                <h3><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h3>
+                
+                <!-- Quick Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-info">
+                            <h4>Present Today</h4>
+                            <span class="stat-number" id="present-count">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-user-friends"></i></div>
+                        <div class="stat-info">
+                            <h4>Total Employees</h4>
+                            <span class="stat-number" id="total-employees">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+                        <div class="stat-info">
+                            <h4>Active Tasks</h4>
+                            <span class="stat-number" id="tasks-progress">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-exclamation-circle"></i></div>
+                        <div class="stat-info">
+                            <h4>Alerts</h4>
+                            <span class="stat-number" id="alert-count">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h4>Quick Actions</h4>
+                    <div class="action-buttons">
+                        <button id="sign-in-btn" class="action-btn sign-in">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </button>
+                        <button id="sign-out-btn" class="action-btn sign-out">
+                            <i class="fas fa-sign-out-alt"></i> Sign Out
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live Attendance Feed -->
+                <div class="live-feed">
+                    <h4><i class="fas fa-broadcast-tower"></i> Live Attendance Feed</h4>
+                    <div id="attendance-list" class="attendance-feed"></div>
+                </div>
+            </div>
+
+            <!-- Attendance Management Section -->
+            <div id="attendance-section" class="dashboard-section" style="display: none;">
+                <h3><i class="fas fa-clock"></i> Attendance Management</h3>
+                
+                <!-- Search and Filter -->
+                <div class="search-filters">
+                    <div class="search-bar">
+                        <input type="text" id="search-employee" placeholder="Search by employee name...">
+                        <button id="search-btn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="filter-options">
+                        <select id="date-filter">
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                        <select id="role-filter">
+                            <option value="all">All Roles</option>
+                            <option value="admin">Admin</option>
+                            <option value="supervisor">Supervisor</option>
+                            <option value="employee">Employee</option>
+                        </select>
+                        <select id="status-filter">
+                            <option value="all">All Status</option>
+                            <option value="present">Present</option>
+                            <option value="absent">Absent</option>
+                            <option value="late">Late Arrivals</option>
+                            <option value="early">Early Leaves</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Attendance Records Table -->
+                <div class="records-table">
+                    <table id="attendance-table">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Action</th>
+                                <th>Time</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendance-records">
+                            <!-- Records will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Workforce Monitoring Section -->
+            <div id="monitoring-section" class="dashboard-section supervisor-admin" style="display: none;">
+                <h3><i class="fas fa-users"></i> Workforce Monitoring</h3>
+                
+                <!-- Live Activity Tracking -->
+                <div class="monitoring-grid">
+                    <div class="monitoring-card">
+                        <h4><i class="fas fa-eye"></i> Live Activity</h4>
+                        <div id="live-activity" class="activity-list">
+                            <!-- Live activities will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Task Assignment -->
+                    <div class="monitoring-card">
+                        <h4><i class="fas fa-clipboard-list"></i> Task Assignment</h4>
+                        <div class="task-form">
+                            <select id="assign-employee">
+                                <option value="">Select Employee</option>
+                            </select>
+                            <input type="text" id="task-title" placeholder="Task title...">
+                            <textarea id="task-description" placeholder="Task description..."></textarea>
+                            <button id="assign-task-btn">Assign Task</button>
+                        </div>
+                        <div id="active-tasks" class="tasks-list">
+                            <!-- Active tasks will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports & Analytics Section -->
+            <div id="reports-section" class="dashboard-section supervisor-admin" style="display: none;">
+                <h3><i class="fas fa-chart-bar"></i> Reports & Analytics</h3>
+                
+                <!-- Report Generation -->
+                <div class="report-controls">
+                    <div class="report-options">
+                        <select id="report-type">
+                            <option value="daily">Daily Report</option>
+                            <option value="weekly">Weekly Report</option>
+                            <option value="monthly">Monthly Report</option>
+                        </select>
+                        <select id="report-department">
+                            <option value="all">All Departments</option>
+                            <option value="hr">Human Resources</option>
+                            <option value="it">IT Department</option>
+                            <option value="finance">Finance</option>
+                        </select>
+                        <button id="generate-report-btn">Generate Report</button>
+                        <button id="export-pdf-btn">Export PDF</button>
+                        <button id="export-excel-btn">Export Excel</button>
+                    </div>
+                </div>
+
+                <!-- Analytics Dashboard -->
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h4><i class="fas fa-chart-line"></i> Attendance Trends</h4>
+                        <div id="attendance-chart" class="chart-container">
+                            <!-- Chart will be rendered here -->
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Pattern Detection</h4>
+                        <div id="pattern-alerts" class="alerts-list">
+                            <!-- AI-detected patterns will be shown here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generated Reports -->
+                <div id="generated-reports" class="reports-container">
+                    <!-- Reports will be displayed here -->
+                </div>
+            </div>
+
+            <!-- Administration Panel -->
+            <div id="admin-section" class="dashboard-section admin-only" style="display: none;">
+                <h3><i class="fas fa-cog"></i> Administration Panel</h3>
+                
+                <!-- Admin Navigation -->
+                <div class="admin-nav">
+                    <button class="admin-nav-btn active" data-admin-section="users">
+                        <i class="fas fa-users-cog"></i> Manage Users
+                    </button>
+                    <button class="admin-nav-btn" data-admin-section="devices">
+                        <i class="fas fa-microchip"></i> Manage Devices
+                    </button>
+                    <button class="admin-nav-btn" data-admin-section="settings">
+                        <i class="fas fa-sliders-h"></i> System Settings
+                    </button>
+                </div>
+
+                <!-- User Management -->
+                <div id="users-admin" class="admin-subsection">
+                    <h4>User Management</h4>
+                    <div class="admin-actions">
+                        <button id="add-user-btn" class="admin-btn">
+                            <i class="fas fa-user-plus"></i> Add New User
+                        </button>
+                    </div>
+                    <div class="users-table">
+                        <table id="users-management-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>MFA</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-list">
+                                <!-- Users will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Device Management -->
+                <div id="devices-admin" class="admin-subsection" style="display: none;">
+                    <h4>Device Management</h4>
+                    <div class="admin-actions">
+                        <button id="add-device-btn" class="admin-btn">
+                            <i class="fas fa-plus"></i> Register New Device
+                        </button>
+                    </div>
+                    <div class="devices-grid" id="devices-list">
+                        <!-- Devices will be populated here -->
+                    </div>
+                </div>
+
+                <!-- System Settings -->
+                <div id="settings-admin" class="admin-subsection" style="display: none;">
+                    <h4>System Settings</h4>
+                    <div class="settings-form">
+                        <div class="setting-group">
+                            <label>
+                                <input type="checkbox" id="require-mfa"> Require MFA for all users
+                            </label>
+                        </div>
+                        <div class="setting-group">
+                            <label>
+                                <input type="checkbox" id="auto-logout"> Auto-logout after inactivity
+                            </label>
+                        </div>
+                        <div class="setting-group">
+                            <label>Working Hours:</label>
+                            <input type="time" id="work-start" value="09:00">
+                            <input type="time" id="work-end" value="17:00">
+                        </div>
+                        <button id="save-settings-btn" class="admin-btn">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security & Logs Section -->
+            <div id="security-section" class="dashboard-section supervisor-admin" style="display: none;">
+                <h3><i class="fas fa-shield-alt"></i> Security & Logs</h3>
+                
+                <!-- Security Overview -->
+                <div class="security-grid">
+                    <div class="security-card">
+                        <h4><i class="fas fa-key"></i> MFA Settings</h4>
+                        <div class="mfa-controls">
+                            <button id="enable-mfa-btn">Enable MFA</button>
+                            <button id="reset-mfa-btn">Reset MFA</button>
+                        </div>
+                    </div>
+                    
+                    <div class="security-card">
+                        <h4><i class="fas fa-history"></i> Access Logs</h4>
+                        <div id="access-logs" class="logs-container">
+                            <!-- Access logs will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audit Trail -->
+                <div class="audit-section">
+                    <h4><i class="fas fa-clipboard-check"></i> Audit Trail</h4>
+                    <div class="audit-filters">
+                        <select id="audit-filter">
+                            <option value="all">All Activities</option>
+                            <option value="login">Login Events</option>
+                            <option value="attendance">Attendance Events</option>
+                            <option value="admin">Admin Actions</option>
+                            <option value="emergency">Emergency Alerts</option>
+                        </select>
+                        <input type="date" id="audit-date">
+                        <button id="filter-audit-btn">Filter</button>
+                    </div>
+                    <div id="audit-trail" class="audit-logs">
+                        <!-- Audit trail will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message Display -->
         <div id="message" class="message"></div>
     </div>
 
     <script src="script.js"></script>
+    <script src="api.js"></script>
+    <script>
+        // Initialize the enhanced system with API integration when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.attendanceSystem = new AttendanceSystemWithAPI();
+        });
+    </script>
 </body>
 </html>
