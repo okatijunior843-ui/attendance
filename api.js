@@ -140,8 +140,8 @@ class AttendanceSystemWithAPI extends AttendanceSystem {
 
     // Override login to use API when available
     async handleLogin() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
 
         if (!username || !password) {
             this.showMessage('Please fill in all fields', 'error');

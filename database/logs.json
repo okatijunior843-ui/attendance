@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1755187767567,
+    "type": "login",
+    "description": "User admin logged in",
+    "userId": 1,
+    "timestamp": "2025-08-14T16:09:27.567Z",
+    "ipAddress": "127.0.0.1"
+  },
+  {
+    "id": 1755187928617,
+    "type": "login",
+    "description": "User admin logged in",
+    "userId": 1,
+    "timestamp": "2025-08-14T16:12:08.617Z",
+    "ipAddress": "127.0.0.1"
+  },
+  {
+    "id": 1755188688438,
+    "type": "attendance",
+    "description": "admin sign-in",
+    "userId": 1,
+    "timestamp": "2025-08-14T16:24:48.438Z",
+    "ipAddress": "127.0.0.1"
+  }
+]
